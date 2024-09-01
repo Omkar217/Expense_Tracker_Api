@@ -17,7 +17,6 @@ public class TransactionServiceImpl implements  TransactionService{
 	
 	private Transaction transaction = new Transaction();
 
-
 	@Override
 	public void saveCategoryInTrans(Category category) 
 	{

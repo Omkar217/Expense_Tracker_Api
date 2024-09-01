@@ -21,7 +21,6 @@ public class CategoryService implements CategorySerInt {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
 
-			
 	@Autowired
 	private CategoryRepo catRepo;
 	
@@ -42,7 +41,7 @@ public class CategoryService implements CategorySerInt {
 						
 			if(total == null) {
 				userObj.setTotalexpense(catExpense);
-			}else {
+			}else{
 				total += catExpense;	
 				userObj.setTotalexpense(total);
 			}
