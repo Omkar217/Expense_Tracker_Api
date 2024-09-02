@@ -53,7 +53,7 @@ public class AuthenticationController
     private  final CategorySerInt categoryService;
     
     @Autowired
-    private TransactionService TransServ;
+    private TransactionService TransServ;// Not recommended on actual Production code
 
     public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, CategorySerInt categoryService ) 
     {
