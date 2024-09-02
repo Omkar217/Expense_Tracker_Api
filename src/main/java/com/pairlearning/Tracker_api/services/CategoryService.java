@@ -3,7 +3,6 @@ package com.pairlearning.Tracker_api.services;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,16 +73,15 @@ public class CategoryService implements CategorySerInt {
 	}
 	
 	
-	public Category getCatByUserServiceById(String email,int catId)
-	{
-		User user1 =  (User) userDetailsService.loadUserByUsername(email); 
-		
-		Integer userId = user1.getUser_id();
-		
-	    Category category = catRepo.findSpecificCategoryByUserId(userId, catId);
-	    
-	    return category;
-	    
-	}
+//	public Categories getCatByUserServiceById(String email,int catId)
+//	{
+//		User user1 =  (User) userDetailsService.loadUserByUsername(email); 
+//		
+//		Integer userId = user1.getUser_id();
+//		
+//	    Categories category = catRepo.findSpecificCategoryByUserId(userId, catId);
+//	    
+//	    return category;
+//	}
 
 }

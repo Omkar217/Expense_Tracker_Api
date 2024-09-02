@@ -4,10 +4,8 @@ import java.awt.RenderingHints.Key;
 import java.io.ObjectInputFilter.Status;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -54,10 +52,10 @@ public class AuthenticationController
     
     private  final CategorySerInt categoryService;
     
-    @Autowired // @Autowired injection Dependency just to check not recommended on production code 
+    @Autowired
     private TransactionService TransServ;
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, CategorySerInt categoryService) 
+    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, CategorySerInt categoryService ) 
     {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
@@ -139,19 +137,17 @@ public class AuthenticationController
 //        return (ResponseEntity<Transaction>) ResponseEntity.ok(t); 
 //    }
     
-    @GetMapping("/categories/{id}")
-    public ResponseEntity<?> getCategoriesById(@RequestHeader("Authorization") String authHeader, @PathVariable Integer id) 
-    {
-    	String token = authHeader.replace("Bearer ", "");
-	 	
-        String email = jwtService.extractUsername(token);
-        
-        Optional<Category> category = Optional.ofNullable(categoryService.getCatByUserServiceById(email,id));
-        
-        if(category.isPresent()) 
-        	return new ResponseEntity<>(category.get(), HttpStatus.OK);
-        else
-           return new ResponseEntity<>("NOT A VALID CATEGORY ID", HttpStatus.NOT_FOUND); 
-    }
+//    @GetMapping("/categories/{id}")
+//    public ResponseEntity<List<Categories>> getCategoriesById(@RequestHeader("Authorization") String authHeader,
+//    		                                                                  @PathVariable Integer id) 
+//    {
+//    	String token = authHeader.replace("Bearer ", "");
+//	 	
+//        String email = jwtService.extractUsername(token);
+//        
+//         List<Categories> list = categoryService.getCatByUserServiceById(email,id);
+//        
+//        return ResponseEntity.ok(list); 
+//    }
     
 }
