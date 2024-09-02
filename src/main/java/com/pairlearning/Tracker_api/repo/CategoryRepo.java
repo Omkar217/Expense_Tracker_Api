@@ -17,7 +17,8 @@ public interface CategoryRepo extends JpaRepository<Category, Integer>
 {
 	@Query("SELECT c FROM Category c WHERE c.user.id = :userId")
 	List<Category> findCategoriesByUserId(@Param("userId") int userId);
-
 	
+	@Query("SELECT c FROM Category c WHERE c.user.id = :userId and c.category.id = :catId")
+	Category findSpecificCategoryByUserId(@Param("userId") int userId,@Param("catId") int catId);
 	
 }
