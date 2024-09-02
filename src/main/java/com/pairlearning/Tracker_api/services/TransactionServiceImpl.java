@@ -25,7 +25,7 @@ public class TransactionServiceImpl implements  TransactionService{
 		    }
 		    transaction.getSetOfCategories().add(category);
 		    
-		    repo.save(transaction);
+		//    repo.save(transaction);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class TransactionServiceImpl implements  TransactionService{
 	{	
 		transaction.setUser(authenticatedUser);
 		
-		repo.save(transaction);		
+	//	repo.save(transaction);		
 	}
 
 	

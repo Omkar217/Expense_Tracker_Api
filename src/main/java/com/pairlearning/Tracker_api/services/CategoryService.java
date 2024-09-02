@@ -73,15 +73,15 @@ public class CategoryService implements CategorySerInt {
 	}
 	
 	
-//	public Categories getCatByUserServiceById(String email,int catId)
-//	{
-//		User user1 =  (User) userDetailsService.loadUserByUsername(email); 
-//		
-//		Integer userId = user1.getUser_id();
-//		
-//	    Categories category = catRepo.findSpecificCategoryByUserId(userId, catId);
-//	    
-//	    return category;
-//	}
+	public Category getCatByUserServiceById(String email,int catId)
+	{
+		User user1 =  (User) userDetailsService.loadUserByUsername(email); 
+		
+		Integer userId = user1.getUser_id();
+		
+	    Category category = catRepo.findSpecificCategoryByUserId(userId, catId);
+	    
+	    return category;
+	}
 
 }

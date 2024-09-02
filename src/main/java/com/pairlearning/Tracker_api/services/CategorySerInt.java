@@ -10,4 +10,6 @@ public interface CategorySerInt {
 	
 	List<Category> getCatByUserService(String email);
 	
+	Category getCatByUserServiceById(String email,int catId);
+	
 }
