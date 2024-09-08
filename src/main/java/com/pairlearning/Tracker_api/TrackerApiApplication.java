@@ -2,9 +2,11 @@ package com.pairlearning.Tracker_api;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.pairlearning.Tracker_api.resources.AuthenticationController;
@@ -16,7 +18,13 @@ public class TrackerApiApplication
 	{
 		SpringApplication.run(TrackerApiApplication.class, args);
 		 Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
-	
-		 logger.info("This ");
+		 logger.info("This is the entry point of application.");
 	}
+	
+//	@Bean
+//	CommandLineRunner commandLineRunner() {
+//		return args -> {
+//			throw new RuntimeException("Something went wrong");
+//		};
+//	}
 }

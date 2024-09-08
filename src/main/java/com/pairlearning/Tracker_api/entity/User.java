@@ -2,12 +2,14 @@ package com.pairlearning.Tracker_api.entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,19 +23,23 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "et_users")
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class User implements UserDetails
 {	
 	    @Id
 	    @Column(name  = "user_id", nullable = false)
-	    private Integer user_id;
+	    private int user_id;
 
 	    @Column(name = "first_name", nullable = false)
 	    private String first_name;
@@ -44,19 +50,22 @@ public class User implements UserDetails
 	    @Column(name  = "email", nullable = false)
 	    private String email;
 	    
-	    @Column(name  = "password", nullable=false)
+	    @Column(name  = "password", nullable = false)
 	    private String password;
 	    
 	    @Transient
+	    @Nullable
 	    @JoinColumn(name = "category_id")
 	    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-	    private List<Category> listOfCategories = new ArrayList<>();                                                                                         
+	    private Set<Category> listOfCategories = new HashSet<>();  //Using Set is recommended..                                                                                  
 	    
 	    @Transient
+	    @Nullable
 		@JoinColumn(name = "transaction_id")
-		@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+		@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 		private Transaction trans;                                                                                                     
 	    
+	    @Nullable
 		@Column(name = "totalexpense")
 		private Double totalexpense;
 		
