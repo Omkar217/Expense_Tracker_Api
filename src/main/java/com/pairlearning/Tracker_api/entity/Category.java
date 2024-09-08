@@ -1,5 +1,6 @@
 package com.pairlearning.Tracker_api.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,18 +9,23 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "et_categories")
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Category 
 {
 	@Id
@@ -32,6 +38,7 @@ public class Category
 	private User user;
 	
 	@Transient
+	@Nullable
 	@JoinColumn(name = "transaction_id")
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Transaction trans;

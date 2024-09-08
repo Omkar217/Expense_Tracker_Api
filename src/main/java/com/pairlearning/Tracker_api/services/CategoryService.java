@@ -1,6 +1,7 @@
 package com.pairlearning.Tracker_api.services;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,8 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import com.pairlearning.Tracker_api.entity.Category;
+import com.pairlearning.Tracker_api.entity.Transaction;
 import com.pairlearning.Tracker_api.entity.User;
 import com.pairlearning.Tracker_api.repo.CategoryRepo;
+import com.pairlearning.Tracker_api.repo.TransactionRepo;
 import com.pairlearning.Tracker_api.repo.UserRepository;
 import com.pairlearning.Tracker_api.resources.AuthenticationController;
 
@@ -20,6 +23,8 @@ import com.pairlearning.Tracker_api.resources.AuthenticationController;
 public class CategoryService implements CategorySerInt {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
+	
+	Transaction transaction = new Transaction();
 
 	@Autowired
 	private CategoryRepo catRepo;
@@ -28,15 +33,24 @@ public class CategoryService implements CategorySerInt {
 	private UserDetailsService userDetailsService;
 	
 	@Autowired
+	private TransactionRepo transRep;
+		
+	@Autowired
 	private UserRepository userRep;
 	
-	public Category saveCategory1(String title, String description, Double catExpense, String email)
+	@Autowired
+	private TransactionService trans;
+	
+//	public CategoryService(TransactionService transSer) {
+//		this.transSer = transSer;
+//	}
+	
+	public Category saveTheCategory(String title, String description, Double catExpense, String email)
 	{	
-		
-			User  userObj =  (User) userDetailsService.loadUserByUsername(email); 
+			User  userObj =  (User)userDetailsService.loadUserByUsername(email); 
 				
 			Category category = new Category();
-			
+									
 			Double total = userObj.getTotalexpense();
 						
 			if(total == null) {
@@ -58,6 +72,18 @@ public class CategoryService implements CategorySerInt {
 
 			userRep.save(userObj);
 			
+			logger.info("saved transactions");
+			
+			transaction.setTime(LocalDateTime.now());
+			
+			transaction.setAmount(catExpense);
+			
+			transaction.setNote(description);
+			
+			trans.saveCate(transaction);
+																			
+			logger.info("Saved the transactions...");
+									
 			return category;
 	}
 	
@@ -68,14 +94,14 @@ public class CategoryService implements CategorySerInt {
 		Integer userId = user1.getUser_id();
 		
 		List<Category> catList = catRepo.findCategoriesByUserId(userId);
-		
+				
 		return catList;
 	}
 	
 	
 	public Category getCatByUserServiceById(String email,int catId)
 	{
-		User user1 =  (User) userDetailsService.loadUserByUsername(email); 
+		User user1 =  (User)userDetailsService.loadUserByUsername(email); 
 		
 		Integer userId = user1.getUser_id();
 		

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,16 +54,19 @@ public class AuthenticationController
     
     private final AuthenticationService authenticationService;
     
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+	    
     private  final CategorySerInt categoryService;
     
-    @Autowired
-    private TransactionService TransServ;// Not recommended on actual Production code
+   // @Autowired
+    private TransactionService transServ;
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, CategorySerInt categoryService ) 
+    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, CategorySerInt categoryService, TransactionService transServ ) 
     {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
         this.categoryService = categoryService;
+        this.transServ = transServ;
     }
 
     @PostMapping("/register")
@@ -79,8 +84,8 @@ public class AuthenticationController
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
         
-        TransServ.saveUser(authenticatedUser);
-                
+    //  TransServ.saveUser(authenticatedUser);
+                        
         LoginResponse loginResponse = new LoginResponse();
         
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
@@ -92,17 +97,19 @@ public class AuthenticationController
     
     @PostMapping("/categories")
     public void saveUserCategories(@RequestHeader("Authorization") String authHeader,
-    	                                           @RequestBody CateRegDto CateRegDto)
+    	                                           @RequestBody CateRegDto cateRegDto)
     {    	
     	String token = authHeader.replace("Bearer ", "");
     	 	
         String email = jwtService.extractUsername(token);
         
-        if((!CateRegDto.getTitle().isEmpty()) && (!CateRegDto.getDescription().isEmpty()) && (CateRegDto.getCateExpense() != null))
+        if((!cateRegDto.getTitle().isEmpty()) && (!cateRegDto.getDescription().isEmpty()) && (cateRegDto.getCateExpense() != null))
         {
-           Category category =  categoryService.saveCategory1(CateRegDto.getTitle(), CateRegDto.getDescription(), CateRegDto.getCateExpense(), email);
+           Category category =  categoryService.saveTheCategory(cateRegDto.getTitle(), cateRegDto.getDescription(), cateRegDto.getCateExpense(), email);
             
-           TransServ.saveCategoryInTrans(category);
+           logger.info("Here");
+           
+           transServ.saveSingleCategoryInTrans(category);
         }
         else
         {
@@ -124,35 +131,33 @@ public class AuthenticationController
         return ResponseEntity.ok(list); 
     }
     
-//    @GetMapping("/transaction/{name}")
-//    public ResponseEntity<Transaction> getTransactionByUser(@RequestHeader("Authorization") String authHeader,
-//    																			   @PathVariable  String user) 
-//    {
-//    	String token = authHeader.replace("Bearer ", "");
-//	 	
-//        String email = jwtService.extractUsername(token);
-//        
-//        List<Category> list = categoryService.getCatByUserService(email);
-//        
-//        Transaction t = new Transaction();
-//        
-//        return (ResponseEntity<Transaction>) ResponseEntity.ok(t); 
-//    }
+    @GetMapping("/transaction/{name}")
+    public ResponseEntity<Transaction> getTransactionByUser(@RequestHeader("Authorization") String authHeader,
+    																	            @PathVariable  String name) 
+    {
+    	String token = authHeader.replace("Bearer ", "");
+	 	
+        String email = jwtService.extractUsername(token);
+                
+        Transaction t = new Transaction();
+        
+        return (ResponseEntity<Transaction>) ResponseEntity.ok(t); 
+    }
     
     @GetMapping("/categories/{id}")
     public ResponseEntity<?> getCategoriesById(@RequestHeader("Authorization") String authHeader,
-    		                                                                  @PathVariable Integer id) 
+    		                                                            @PathVariable Integer id) 
     {
     	String token = authHeader.replace("Bearer ", "");
 	 	
         String email = jwtService.extractUsername(token);
         
-         Optional<Category> category = Optional.ofNullable(categoryService.getCatByUserServiceById(email,id));
+        Optional<Category> category = Optional.ofNullable(categoryService.getCatByUserServiceById(email,id));
         
-         if(category.isPresent()) {
+        if(category.isPresent()) {
         	 return new ResponseEntity<>(category.get(), HttpStatus.OK);
-         }
-         return new ResponseEntity<>("INVALID CATEGORY ID", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("INVALID CATEGORY ID", HttpStatus.NOT_FOUND);
     }
     
 }

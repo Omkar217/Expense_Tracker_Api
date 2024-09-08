@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ApiExceptionHandler 
 {
-	@ExceptionHandler(value = ApiReqException.class )
+	@ExceptionHandler(value = ApiReqException.class)
 	public ResponseEntity<Object> handleApiRequestException(ApiReqException e)
 	{
 		HttpStatus badRequest = HttpStatus.PARTIAL_CONTENT;
