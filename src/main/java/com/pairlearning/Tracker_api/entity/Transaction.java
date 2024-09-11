@@ -57,9 +57,8 @@ public class Transaction
 	private User user;
 	
 	
-	//@JsonProperty("category_id")
 	@Nullable
-	@JoinColumn(name = "cat_ref_trans")
+	@JoinColumn(name = "cat_ref_trans")//referencing null values due to hibernate issues..
 	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
 	private Set<Category> setOfCategories = new HashSet<>();
 	
