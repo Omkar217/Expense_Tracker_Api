@@ -50,7 +50,6 @@ public class Transaction
 	private int transaction_id;
 	
 	@Nullable
-	@JsonProperty("user_id")
 	@JoinColumn(name = "user_id")
 	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
 	private User user;
