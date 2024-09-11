@@ -6,14 +6,6 @@ import com.pairlearning.Tracker_api.entity.User;
 
 public interface TransactionService {
 	
-	void saveCategoryInTrans(Category category, String description, double cateExpense, Transaction transaction);
+	Transaction getTransactions(String email);
 	
-	void saveUser(User authenticatedUser);
-	
-	Transaction getTransactions(String name);
-	
-	void saveSingleCategoryInTrans(Category category);
-
-	void saveCate(Transaction transaction);
-
 }

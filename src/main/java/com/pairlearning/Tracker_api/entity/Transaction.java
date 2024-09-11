@@ -56,9 +56,9 @@ public class Transaction
 	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
 	private User user;
 	
-	@JsonProperty("category_id")
+	
 	@Nullable
-	@JoinColumn(name = "category_id")
+	@JoinColumn(name = "cat_ref_trans")//referencing null values due to hibernate issues..
 	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
 	private Set<Category> setOfCategories = new HashSet<>();
 	
@@ -67,10 +67,6 @@ public class Transaction
 	@Column(name = "amount")
 	private double amount;
 	
-	@JsonProperty("note")
-	@Nullable
-	@Column(name = "note")
-	private String note;
 	
 	@JsonProperty("transaction_date")
 	@Nullable

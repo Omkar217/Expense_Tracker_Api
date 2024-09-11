@@ -7,10 +7,12 @@ import com.pairlearning.Tracker_api.entity.Transaction;
 
 public interface CategorySerInt {
 	
-     Category saveTheCategory(String title, String description, Double cateExpense ,String email);
+    Category saveTheCategory(String title, String description, Double cateExpense ,String email);
 	
 	List<Category> getCatByUserService(String email);
 	
 	Category getCatByUserServiceById(String email,int catId);
+
+	Category updateTheCategory(Integer categoryId, Category category);
 	
 }

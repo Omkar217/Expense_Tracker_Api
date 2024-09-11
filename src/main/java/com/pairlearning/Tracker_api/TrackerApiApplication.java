@@ -21,10 +21,4 @@ public class TrackerApiApplication
 		 logger.info("This is the entry point of application.");
 	}
 	
-//	@Bean
-//	CommandLineRunner commandLineRunner() {
-//		return args -> {
-//			throw new RuntimeException("Something went wrong");
-//		};
-//	}
 }

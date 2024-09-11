@@ -1,5 +1,7 @@
 package com.pairlearning.Tracker_api.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +20,8 @@ public class AuthenticationService
     private final PasswordEncoder passwordEncoder;
     
     private final AuthenticationManager authenticationManager;
+    
+	private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
 
     public AuthenticationService(UserRepository userRepository, AuthenticationManager authenticationManager,PasswordEncoder passwordEncoder) 
     {
