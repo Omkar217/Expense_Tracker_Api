@@ -41,10 +41,12 @@ public class Category
 	private User user;
 	
 	@JoinColumn(name = "cat_ref_trans")
+	@Transient
 	@Nullable
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Integer cat_ref_trans;
 	
+	@Transient
 	@Nullable
 	@JoinColumn(name = "transaction_id", nullable = true)
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
