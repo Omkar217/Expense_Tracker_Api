@@ -1,9 +1,6 @@
 package com.pairlearning.Tracker_api.resources;
 
-import java.awt.RenderingHints.Key;
-import java.io.ObjectInputFilter.Status;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -16,13 +13,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pairlearning.Tracker_api.dtos.CateRegDto;
-import com.pairlearning.Tracker_api.dtos.LoginCatResp;
 import com.pairlearning.Tracker_api.dtos.LoginResponse;
 import com.pairlearning.Tracker_api.dtos.LoginUserDto;
 import com.pairlearning.Tracker_api.dtos.RegisterUserDto;
@@ -53,13 +50,12 @@ public class AuthenticationController
     private final JwtService jwtService;
     
     private final AuthenticationService authenticationService;
-    
-	private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
-	    
+      
     private  final CategorySerInt categoryService;
     
-   // @Autowired
-    private TransactionService transServ;
+    private final TransactionService transServ;
+    
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, CategorySerInt categoryService, TransactionService transServ ) 
     {
@@ -83,9 +79,7 @@ public class AuthenticationController
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
-        
-    //  TransServ.saveUser(authenticatedUser);
-                        
+                                
         LoginResponse loginResponse = new LoginResponse();
         
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
@@ -105,11 +99,7 @@ public class AuthenticationController
         
         if((!cateRegDto.getTitle().isEmpty()) && (!cateRegDto.getDescription().isEmpty()) && (cateRegDto.getCateExpense() != null))
         {
-           Category category =  categoryService.saveTheCategory(cateRegDto.getTitle(), cateRegDto.getDescription(), cateRegDto.getCateExpense(), email);
-            
-           logger.info("Here");
-           
-           transServ.saveSingleCategoryInTrans(category);
+           categoryService.saveTheCategory(cateRegDto.getTitle(), cateRegDto.getDescription(), cateRegDto.getCateExpense(), email);            
         }
         else
         {
@@ -117,7 +107,6 @@ public class AuthenticationController
         }
         
     }
-    
     
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> getAllCategories(@RequestHeader("Authorization") String authHeader) 
@@ -131,17 +120,43 @@ public class AuthenticationController
         return ResponseEntity.ok(list); 
     }
     
-    @GetMapping("/transaction/{name}")
-    public ResponseEntity<Transaction> getTransactionByUser(@RequestHeader("Authorization") String authHeader,
-    																	            @PathVariable  String name) 
+    @PutMapping("/categories/{categoryId}")
+    public ResponseEntity<?> updateCategoriesByUser(@RequestHeader("Authorization") String authHeader,  @RequestBody Category category, 
+    																	                                @PathVariable("categoryId") int categoryId) 
+    {
+    	Optional<Category> returnedCategory;
+    	
+    	String token = authHeader.replace("Bearer ", "");
+	 	
+        jwtService.extractUsername(token);
+        
+        if((!category.getTitle().isEmpty()) && (!category.getDescription().isEmpty()) && (category.getCateExpense() != null))
+        {
+           returnedCategory =  Optional.ofNullable(categoryService.updateTheCategory(categoryId,category));            
+        }
+        else
+        {
+        	throw new ApiReqException("partial content or empty content.");
+        }       
+        if(returnedCategory.isPresent()) {
+       	 return new ResponseEntity<>(returnedCategory.get(), HttpStatus.OK);
+       }
+       return new ResponseEntity<>("INVALID TRANSACTION ID", HttpStatus.NOT_FOUND);
+    }
+    
+    @GetMapping("/transaction")
+    public ResponseEntity<?> getTransactionByUserName(@RequestHeader("Authorization") String authHeader) 
     {
     	String token = authHeader.replace("Bearer ", "");
 	 	
         String email = jwtService.extractUsername(token);
-                
-        Transaction t = new Transaction();
         
-        return (ResponseEntity<Transaction>) ResponseEntity.ok(t); 
+        Optional<Transaction> transaction = Optional.ofNullable(transServ.getTransactions(email));
+                
+        if(transaction.isPresent()) {
+       	 return new ResponseEntity<>(transaction.get(), HttpStatus.OK);
+       }
+       return new ResponseEntity<>("INVALID TRANSACTION ID", HttpStatus.NOT_FOUND);
     }
     
     @GetMapping("/categories/{id}")

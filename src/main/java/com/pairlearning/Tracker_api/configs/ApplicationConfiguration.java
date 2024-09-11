@@ -1,6 +1,9 @@
 package com.pairlearning.Tracker_api.configs;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -16,15 +19,15 @@ import com.pairlearning.Tracker_api.services.CategoryService;
 import com.pairlearning.Tracker_api.services.TransactionService;
 
 @Configuration
-public class ApplicationConfiguration {
-	
+public class ApplicationConfiguration 
+{
     private final UserRepository userRepository;
 
     public ApplicationConfiguration(UserRepository userRepository) 
     {
         this.userRepository = userRepository;
     }
-
+    
     @Bean
     UserDetailsService userDetailsService() 
     {
@@ -32,7 +35,7 @@ public class ApplicationConfiguration {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    @Bean// Here Beans are used because hey specify they reflect that they are ready to use from spring application context....
+    @Bean// Here Beans are used because reflect that they are ready to use from spring application context....
     BCryptPasswordEncoder passwordEncoder() 
     {
         return new BCryptPasswordEncoder();
@@ -43,11 +46,6 @@ public class ApplicationConfiguration {
     {
         return config.getAuthenticationManager();
     }
-    
-//    @Bean
-//    public CategoryService getCategoryService(TransactionService tranSer) {
-//      return new CategoryService(tranSer);
-//    }
 
     @Bean
     AuthenticationProvider authenticationProvider() 

@@ -63,7 +63,7 @@ public class User implements UserDetails
 	    @Nullable
 		@JoinColumn(name = "transaction_id")
 		@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-		private Transaction trans;                                                                                                     
+		private Transaction userTransaction;                                                                                                     
 	    
 	    @Nullable
 		@Column(name = "totalexpense")

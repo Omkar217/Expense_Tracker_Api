@@ -24,8 +24,6 @@ public class CategoryService implements CategorySerInt {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
 	
-	Transaction transaction = new Transaction();
-
 	@Autowired
 	private CategoryRepo catRepo;
 	
@@ -38,15 +36,11 @@ public class CategoryService implements CategorySerInt {
 	@Autowired
 	private UserRepository userRep;
 	
-	@Autowired
-	private TransactionService trans;
-	
-//	public CategoryService(TransactionService transSer) {
-//		this.transSer = transSer;
-//	}
 	
 	public Category saveTheCategory(String title, String description, Double catExpense, String email)
 	{	
+		    Transaction transaction = new Transaction();
+
 			User  userObj =  (User)userDetailsService.loadUserByUsername(email); 
 				
 			Category category = new Category();
@@ -54,35 +48,35 @@ public class CategoryService implements CategorySerInt {
 			Double total = userObj.getTotalexpense();
 						
 			if(total == null) {
-				userObj.setTotalexpense(catExpense);
+				userObj.setTotalexpense(catExpense);				
+				transaction.setAmount(catExpense);
 			}else{
 				total += catExpense;	
 				userObj.setTotalexpense(total);
+				transaction.setAmount(total);
 			}
-							
+				
+			category.setCateExpense(catExpense);
+			
 			category.setUser(userObj);
 		
 			category.setTitle(title);
 		
 			category.setDescription(description);
-			
-			category.setCateExpense(catExpense);
-				
+							
 			catRepo.save(category);
 
 			userRep.save(userObj);
 			
-			logger.info("saved transactions");
+			logger.info("Saved Categories.....");
+			
+			transaction.setUser(userObj);
 			
 			transaction.setTime(LocalDateTime.now());
-			
-			transaction.setAmount(catExpense);
-			
-			transaction.setNote(description);
-			
-			trans.saveCate(transaction);
-																			
-			logger.info("Saved the transactions...");
+												
+			transRep.save(transaction);
+										
+			logger.info("Saved the Transactions...");
 									
 			return category;
 	}
@@ -96,6 +90,19 @@ public class CategoryService implements CategorySerInt {
 		List<Category> catList = catRepo.findCategoriesByUserId(userId);
 				
 		return catList;
+	}
+	
+	public Category updateTheCategory(Integer categoryId,Category theCategory)
+	{
+		Category retrievedCategory = catRepo.findById(categoryId).orElseThrow();
+		
+		retrievedCategory.setTitle(theCategory.getTitle());
+		
+		retrievedCategory.setDescription(theCategory.getDescription());
+		
+		retrievedCategory.setCateExpense(theCategory.getCateExpense());
+        
+		return catRepo.save(retrievedCategory);    
 	}
 	
 	

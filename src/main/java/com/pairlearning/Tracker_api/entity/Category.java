@@ -1,5 +1,7 @@
 package com.pairlearning.Tracker_api.entity;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,13 +35,20 @@ public class Category
 	@Column(name = "category_id")
 	private Integer category_id;
 	
+	
 	@JoinColumn(name = "user_id")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 	
+	@JoinColumn(name = "cat_ref_trans")//can be done better.....
 	@Transient
 	@Nullable
-	@JoinColumn(name = "transaction_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Integer cat_ref_trans;
+	
+	@Transient
+	@Nullable
+	@JoinColumn(name = "transaction_id", nullable = true)
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Transaction trans;
 	

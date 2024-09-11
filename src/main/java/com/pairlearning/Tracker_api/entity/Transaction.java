@@ -41,7 +41,6 @@ import lombok.Setter;
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Transaction 
 {
 	@Id
@@ -56,23 +55,16 @@ public class Transaction
 	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
 	private User user;
 	
-	@JsonProperty("category_id")
+	
 	@Nullable
 	@JoinColumn(name = "category_id")
 	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-	private Set<Category> setOfCategories = new HashSet<>();
+	private Set<Category> setOfCategories = new HashSet<>();//Unable to reference category Ids due to hibernate issues
 	
-	@JsonProperty("amount")
 	@Nullable
 	@Column(name = "amount")
 	private double amount;
 	
-	@JsonProperty("note")
-	@Nullable
-	@Column(name = "note")
-	private String note;
-	
-	@JsonProperty("transaction_date")
 	@Nullable
 	@Column(name = "transaction_date")
 	private LocalDateTime time;
