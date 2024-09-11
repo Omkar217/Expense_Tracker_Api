@@ -124,7 +124,7 @@ public class AuthenticationController
     public ResponseEntity<?> updateCategoriesByUser(@RequestHeader("Authorization") String authHeader,  @RequestBody Category category, 
     																	                                @PathVariable("categoryId") int categoryId) 
     {
-    	Optional<Category> returnedCategory;
+    	Optional<Category> returnedCategory = java.util.Optional.empty();
     	
     	String token = authHeader.replace("Bearer ", "");
 	 	
@@ -133,19 +133,15 @@ public class AuthenticationController
         if((!category.getTitle().isEmpty()) && (!category.getDescription().isEmpty()) && (category.getCateExpense() != null))
         {
            returnedCategory =  Optional.ofNullable(categoryService.updateTheCategory(categoryId,category));            
-        }
-        else
-        {
-        	throw new ApiReqException("partial content or empty content.");
-        }       
+        }      
         if(returnedCategory.isPresent()) {
        	 return new ResponseEntity<>(returnedCategory.get(), HttpStatus.OK);
        }
-       return new ResponseEntity<>("INVALID TRANSACTION ID", HttpStatus.NOT_FOUND);
+       return new ResponseEntity<>("INVALID CATEGORY ID", HttpStatus.NOT_FOUND);
     }
     
     @GetMapping("/transaction")
-    public ResponseEntity<?> getTransactionByUserName(@RequestHeader("Authorization") String authHeader) 
+    public ResponseEntity<Transaction> getTransactionByUserName(@RequestHeader("Authorization") String authHeader) 
     {
     	String token = authHeader.replace("Bearer ", "");
 	 	
@@ -153,10 +149,7 @@ public class AuthenticationController
         
         Optional<Transaction> transaction = Optional.ofNullable(transServ.getTransactions(email));
                 
-        if(transaction.isPresent()) {
-       	 return new ResponseEntity<>(transaction.get(), HttpStatus.OK);
-       }
-       return new ResponseEntity<>("INVALID TRANSACTION ID", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(transaction.get(), HttpStatus.OK);
     }
     
     @GetMapping("/categories/{id}")
